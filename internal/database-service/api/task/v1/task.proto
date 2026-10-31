@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package task.v1;
+
+option go_package = "database-service/api/task/v1;taskv1";
+
+import "google/protobuf/timestamp.proto";
+
+service TaskService {
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+}
+message Task {
+  int64 id = 1;
+  string title = 2;
+  int64 user_id = 3;
+  int32 duration_seconds = 4;
+  google.protobuf.Timestamp start_time = 5;
+  int32 priority = 6;
+}
+
+message CreateTaskRequest {
+  string title = 1;
+  int64 user_id = 2;
+  int32 duration_seconds = 3;
+  google.protobuf.Timestamp start_time = 4;
+  int32 priority = 5;
+}
+
+message CreateTaskResponse {
+  Task task = 1;
+}
