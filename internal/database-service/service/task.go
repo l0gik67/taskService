@@ -8,11 +8,11 @@ import (
 )
 
 type TaskService interface {
-	Get(id int) (*model.Task, error)
-	GetByUserId(userId int) ([]*model.Task, error)
+	Get(id int64) (*model.Task, error)
+	GetByUserId(userId int64) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
-	Delete(taskId int) error
+	Delete(taskId int64) error
 }
 
 type TaskServiceImpl struct {
@@ -23,11 +23,11 @@ func NewTaskServiceImpl(repo repository.TaskRepository) *TaskServiceImpl {
 	return &TaskServiceImpl{repo: repo}
 }
 
-func (service *TaskServiceImpl) Get(id int) (*model.Task, error) {
+func (service *TaskServiceImpl) Get(id int64) (*model.Task, error) {
 	return service.repo.Get(id)
 }
 
-func (service *TaskServiceImpl) GetByUserId(userId int) ([]*model.Task, error) {
+func (service *TaskServiceImpl) GetByUserId(userId int64) ([]*model.Task, error) {
 	return service.repo.GetByUserId(userId)
 }
 
@@ -47,7 +47,7 @@ func (service *TaskServiceImpl) Update(task *model.Task) error {
 	return service.repo.Update(task)
 }
 
-func (service *TaskServiceImpl) Delete(taskId int) error {
+func (service *TaskServiceImpl) Delete(taskId int64) error {
 	return service.repo.Delete(taskId)
 }
 

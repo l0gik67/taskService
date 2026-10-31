@@ -3,10 +3,10 @@ package model
 import "time"
 
 type Task struct {
-	Id        int
+	Id        int64
 	Title     string
-	UserId    int
+	UserId    int64
 	Duration  time.Duration
 	StartTime time.Time
-	Priority  int // 1 - important; 100 - zero important
+	Priority  int32 // 1 - important; 100 - zero important
 }

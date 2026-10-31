@@ -44,11 +44,11 @@ WHERE id = $1;
 )
 
 type TaskRepository interface {
-	Get(id int) (*model.Task, error)
-	GetByUserId(userId int) ([]*model.Task, error)
+	Get(id int64) (*model.Task, error)
+	GetByUserId(userId int64) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
-	Delete(taskId int) error
+	Delete(taskId int64) error
 }
 
 type TaskRepositoryImpl struct {
@@ -61,7 +61,7 @@ func NewTaskRepository(pool *pgxpool.Pool) TaskRepository {
 	}
 }
 
-func (repo *TaskRepositoryImpl) Get(id int) (*model.Task, error) {
+func (repo *TaskRepositoryImpl) Get(id int64) (*model.Task, error) {
 	connection, err := repo.pool.Acquire(context.Background())
 	if err != nil {
 		// TODO: add logs
@@ -83,7 +83,7 @@ func (repo *TaskRepositoryImpl) Get(id int) (*model.Task, error) {
 	return &task, nil
 }
 
-func (repo *TaskRepositoryImpl) GetByUserId(userId int) ([]*model.Task, error) {
+func (repo *TaskRepositoryImpl) GetByUserId(userId int64) ([]*model.Task, error) {
 	connection, err := repo.pool.Acquire(context.Background())
 	if err != nil {
 		// TODO: add logs
@@ -168,7 +168,7 @@ func (repo *TaskRepositoryImpl) Update(task *model.Task) error {
 	return nil
 }
 
-func (repo *TaskRepositoryImpl) Delete(taskId int) error {
+func (repo *TaskRepositoryImpl) Delete(taskId int64) error {
 	connection, err := repo.pool.Acquire(context.Background())
 	if err != nil {
 		// TODO add logs
