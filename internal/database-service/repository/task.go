@@ -44,7 +44,7 @@ WHERE id = $1;
 )
 
 type TaskRepository interface {
-	Get(id int64) (*model.Task, error)
+	GetById(id int64) (*model.Task, error)
 	GetByUserId(userId int64) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
@@ -61,7 +61,7 @@ func NewTaskRepository(pool *pgxpool.Pool) TaskRepository {
 	}
 }
 
-func (repo *TaskRepositoryImpl) Get(id int64) (*model.Task, error) {
+func (repo *TaskRepositoryImpl) GetById(id int64) (*model.Task, error) {
 	connection, err := repo.pool.Acquire(context.Background())
 	if err != nil {
 		// TODO: add logs

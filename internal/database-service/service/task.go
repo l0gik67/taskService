@@ -8,7 +8,7 @@ import (
 )
 
 type TaskService interface {
-	Get(id int64) (*model.Task, error)
+	GetById(id int64) (*model.Task, error)
 	GetByUserId(userId int64) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
@@ -23,8 +23,8 @@ func NewTaskServiceImpl(repo repository.TaskRepository) *TaskServiceImpl {
 	return &TaskServiceImpl{repo: repo}
 }
 
-func (service *TaskServiceImpl) Get(id int64) (*model.Task, error) {
-	return service.repo.Get(id)
+func (service *TaskServiceImpl) GetById(id int64) (*model.Task, error) {
+	return service.repo.GetById(id)
 }
 
 func (service *TaskServiceImpl) GetByUserId(userId int64) ([]*model.Task, error) {

@@ -2,11 +2,11 @@ services:
   postgres:
     image: postgres:18-bookworm
     environment:
-      POSTGRES_DB: task_service
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: app_dev_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "127.0.0.1:5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
@@ -14,5 +14,15 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+  database-service:
+    build: ./internal/database-service
+    env_file:
+      - ./.env
+    ports:
+      - "${DATABASE_SERVICE_PORT}:${DATABASE_SERVICE_PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:

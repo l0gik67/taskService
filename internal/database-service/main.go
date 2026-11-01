@@ -33,7 +33,8 @@ func run() error {
 	taskService := service.NewTaskServiceImpl(repo)
 	handler := transport.NewTaskHandler(taskService)
 
-	listener, err := net.Listen("tcp", "127.0.0.1:50051")
+	serverAddress := os.Getenv("ADDRESS")
+	listener, err := net.Listen("tcp", serverAddress)
 	if err != nil {
 		return fmt.Errorf("listen: %w", err)
 	}
