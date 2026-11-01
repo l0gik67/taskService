@@ -2,9 +2,8 @@ package repository
 
 import (
 	"context"
+	"core/model"
 	"time"
-
-	"database-service/model"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

@@ -1,10 +1,8 @@
 package service
 
 import (
-	"database-service/model"
+	"core/model"
 	"database-service/repository"
-	"errors"
-	"strings"
 )
 
 type TaskService interface {
@@ -32,7 +30,7 @@ func (service *TaskServiceImpl) GetByUserId(userId int64) ([]*model.Task, error)
 }
 
 func (service *TaskServiceImpl) Create(task *model.Task) (*model.Task, error) {
-	if err := service.validate(task); err != nil {
+	if err := task.Validate(); err != nil {
 		return nil, err
 	}
 
@@ -40,7 +38,7 @@ func (service *TaskServiceImpl) Create(task *model.Task) (*model.Task, error) {
 }
 
 func (service *TaskServiceImpl) Update(task *model.Task) error {
-	if err := service.validate(task); err != nil {
+	if err := task.Validate(); err != nil {
 		return err
 	}
 
@@ -49,20 +47,4 @@ func (service *TaskServiceImpl) Update(task *model.Task) error {
 
 func (service *TaskServiceImpl) Delete(taskId int64) error {
 	return service.repo.Delete(taskId)
-}
-
-func (service TaskServiceImpl) validate(task *model.Task) error {
-	if task == nil {
-		return errors.New("task can't be nil")
-	}
-	if strings.TrimSpace(task.Title) == "" {
-		return errors.New("task title is empty")
-	}
-	if task.Priority < 1 || task.Priority > 100 {
-		return errors.New("task priority should be between 0 and 100")
-	}
-	if task.Duration < 0 {
-		return errors.New("task duration can't be less than 0")
-	}
-	return nil
 }
