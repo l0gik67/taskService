@@ -108,17 +108,22 @@ func (handler *TaskHandler) GetTaskById(ctx context.Context, req *taskv1.GetTask
 	}, nil
 }
 
-func (handler *TaskHandler) GetTasksByUserId(ctx context.Context, req *taskv1.GetTasksByUserIdRequest) (*taskv1.GetTasksByUserIdResponse, error) {
+func (handler *TaskHandler) ListTasks(ctx context.Context, req *taskv1.ListTasksRequest) (*taskv1.ListTasksResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "get tasks by user request is nil")
+		return nil, status.Error(codes.InvalidArgument, "list tasks request is nil")
 	}
 
-	tasks, err := handler.taskService.GetByUserId(req.UserId)
+	filter := model.TaskFilter{UserID: req.UserId}
+	if err := filter.Validate(); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	tasks, err := handler.taskService.List(filter)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	response := &taskv1.GetTasksByUserIdResponse{
+	response := &taskv1.ListTasksResponse{
 		Tasks: make([]*taskv1.Task, len(tasks)),
 	}
 	for i, task := range tasks {

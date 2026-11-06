@@ -21,6 +21,6 @@ type TaskHandler struct {
 	taskService *service.TaskService
 }
 
-func (taskHandler *TaskHandler) getAllTasks(w http.ResponseWriter, r *http.Request) {
+func (taskHandler *TaskHandler) List(w http.ResponseWriter, r *http.Request) {
 
 }

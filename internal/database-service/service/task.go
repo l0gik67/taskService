@@ -9,7 +9,7 @@ import (
 
 type TaskService interface {
 	GetById(id int64) (*model.Task, error)
-	GetByUserId(userId int64) ([]*model.Task, error)
+	List(filter model.TaskFilter) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
 	Delete(taskId int64) error
@@ -27,8 +27,11 @@ func (service *TaskServiceImpl) GetById(id int64) (*model.Task, error) {
 	return service.repo.GetById(id)
 }
 
-func (service *TaskServiceImpl) GetByUserId(userId int64) ([]*model.Task, error) {
-	return service.repo.GetByUserId(userId)
+func (service *TaskServiceImpl) List(filter model.TaskFilter) ([]*model.Task, error) {
+	if err := filter.Validate(); err != nil {
+		return nil, err
+	}
+	return service.repo.List(filter)
 }
 
 func (service *TaskServiceImpl) Create(task *model.Task) (*model.Task, error) {

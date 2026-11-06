@@ -21,9 +21,9 @@ SELECT
 	priority
 FROM tasks
 `
-	getTaskSql          = getCommonSql + "WHERE id = $1;"
-	getTasksByUserIdSql = getCommonSql + "WHERE user_id = $1;"
-	createTaskSql       = `
+	getTaskSql    = getCommonSql + "WHERE id = $1;"
+	listTasksSql  = getCommonSql + "WHERE user_id = $1;"
+	createTaskSql = `
 INSERT INTO tasks (title, user_id, duration, start_time, priority)
 VALUES ($1, $2, $3, $4, $5)
 RETURNING id;
@@ -45,7 +45,7 @@ WHERE id = $1;
 
 type TaskRepository interface {
 	GetById(id int64) (*model.Task, error)
-	GetByUserId(userId int64) ([]*model.Task, error)
+	List(filter model.TaskFilter) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
 	Delete(taskId int64) error
@@ -83,7 +83,11 @@ func (repo *TaskRepositoryImpl) GetById(id int64) (*model.Task, error) {
 	return &task, nil
 }
 
-func (repo *TaskRepositoryImpl) GetByUserId(userId int64) ([]*model.Task, error) {
+func (repo *TaskRepositoryImpl) List(filter model.TaskFilter) ([]*model.Task, error) {
+	if err := filter.Validate(); err != nil {
+		return nil, err
+	}
+
 	connection, err := repo.pool.Acquire(context.Background())
 	if err != nil {
 		// TODO: add logs
@@ -91,7 +95,7 @@ func (repo *TaskRepositoryImpl) GetByUserId(userId int64) ([]*model.Task, error)
 	}
 	defer connection.Release()
 
-	result, err := connection.Query(context.Background(), getTasksByUserIdSql, userId)
+	result, err := connection.Query(context.Background(), listTasksSql, filter.UserID)
 	if err != nil {
 		// TODO: add logs
 		return nil, err

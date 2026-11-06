@@ -12,7 +12,7 @@ service TaskService {
   rpc UpdateTask(UpdateTaskRequest) returns (google.protobuf.Empty);
   rpc DeleteTask(DeleteTaskRequest) returns (google.protobuf.Empty);
   rpc GetTaskById(GetTaskByIdRequest) returns (Task);
-  rpc GetTasksByUserId(GetTasksByUserIdRequest) returns (GetTasksByUserIdResponse);
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
 }
 message Task {
   int64 id = 1;
@@ -52,10 +52,11 @@ message GetTaskByIdRequest {
   int64 id = 1;
 }
 
-message GetTasksByUserIdRequest {
+message ListTasksRequest {
+  // Required; must be greater than zero.
   int64 user_id = 1;
 }
 
-message GetTasksByUserIdResponse {
+message ListTasksResponse {
   repeated Task tasks = 1;
 }
