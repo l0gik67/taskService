@@ -6,13 +6,15 @@ import (
 	"time"
 )
 
+var ErrTaskNotFound = errors.New("task not found")
+
 type Task struct {
-	Id        int64
-	Title     string
-	UserId    int64
-	Duration  time.Duration
-	StartTime time.Time
-	Priority  int32 // 1 - important; 100 - zero important
+	Id        int64         `json:"id"`
+	Title     string        `json:"title"`
+	UserId    int64         `json:"user_id"`
+	Duration  time.Duration `json:"duration"`
+	StartTime time.Time     `json:"start_time"`
+	Priority  int32         `json:"priority"` // 1 - important; 100 - zero important
 }
 
 func (task *Task) Validate() error {
