@@ -2,9 +2,10 @@ package transport
 
 import (
 	"context"
+	"core/model"
 	taskv1 "database-service/api/task/v1"
-	"database-service/model"
 	"database-service/service"
+	"errors"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -95,6 +96,9 @@ func (handler *TaskHandler) GetTaskById(ctx context.Context, req *taskv1.GetTask
 	task, err := handler.taskService.GetById(req.Id)
 
 	if err != nil {
+		if errors.Is(err, model.ErrTaskNotFound) {
+			return nil, status.Error(codes.NotFound, err.Error())
+		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

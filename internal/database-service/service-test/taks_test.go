@@ -1,7 +1,7 @@
 package service_test
 
 import (
-	"database-service/model"
+	"core/model"
 	"database-service/service"
 	"testing"
 )

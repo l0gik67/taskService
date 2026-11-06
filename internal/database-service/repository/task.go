@@ -2,10 +2,11 @@ package repository
 
 import (
 	"context"
+	"core/model"
+	"errors"
 	"time"
 
-	"database-service/model"
-
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -76,11 +77,18 @@ func (repo *TaskRepositoryImpl) GetById(id int64) (*model.Task, error) {
 	err = result.Scan(&task.Id, &task.Title, &task.UserId, &durationSeconds, &task.StartTime, &task.Priority)
 	if err != nil {
 		// TODO add logs
-		return nil, err
+		return nil, mapTaskLookupError(err)
 	}
 	task.Duration = time.Duration(durationSeconds) * time.Second
 
 	return &task, nil
+}
+
+func mapTaskLookupError(err error) error {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return model.ErrTaskNotFound
+	}
+	return err
 }
 
 func (repo *TaskRepositoryImpl) GetByUserId(userId int64) ([]*model.Task, error) {
