@@ -109,11 +109,16 @@ func (handler *TaskHandlerImpl) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	taskModel := &model.Task{
-		UserId:    taskDto.UserId,
-		Title:     taskDto.Title,
-		StartTime: taskDto.StartTime,
-		Duration:  taskDto.Duration,
-		Priority:  taskDto.Priority,
+		UserId:      taskDto.UserId,
+		Title:       taskDto.Title,
+		Description: taskDto.Description,
+		ColumnId:    taskDto.ColumnId,
+		Position:    taskDto.Position,
+		Progress:    taskDto.Progress,
+		IsDone:      taskDto.IsDone,
+		StartTime:   taskDto.StartTime,
+		Duration:    taskDto.Duration,
+		Priority:    taskDto.Priority,
 	}
 	task, err := handler.taskService.Create(r.Context(), taskModel)
 
@@ -139,12 +144,17 @@ func (handler *TaskHandlerImpl) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	taskModel := &model.Task{
-		Id:        taskDto.Id,
-		UserId:    taskDto.UserId,
-		Title:     taskDto.Title,
-		StartTime: taskDto.StartTime,
-		Duration:  taskDto.Duration,
-		Priority:  taskDto.Priority,
+		Id:          taskDto.Id,
+		UserId:      taskDto.UserId,
+		Title:       taskDto.Title,
+		Description: taskDto.Description,
+		ColumnId:    taskDto.ColumnId,
+		Position:    taskDto.Position,
+		Progress:    taskDto.Progress,
+		IsDone:      taskDto.IsDone,
+		StartTime:   taskDto.StartTime,
+		Duration:    taskDto.Duration,
+		Priority:    taskDto.Priority,
 	}
 	err = handler.taskService.Update(r.Context(), taskModel)
 	if err != nil {

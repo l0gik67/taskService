@@ -32,11 +32,16 @@ func (handler *TaskHandler) CreateTask(ctx context.Context, req *taskv1.CreateTa
 	}
 
 	task := &model.Task{
-		Title:     req.Title,
-		UserId:    req.UserId,
-		Duration:  time.Duration(req.DurationSeconds) * time.Second,
-		StartTime: req.StartTime.AsTime(),
-		Priority:  req.Priority,
+		Title:       req.Title,
+		Description: req.Description,
+		UserId:      req.UserId,
+		ColumnId:    req.ColumnId,
+		Position:    req.Position,
+		Progress:    req.Progress,
+		IsDone:      req.IsDone,
+		Duration:    time.Duration(req.DurationSeconds) * time.Second,
+		StartTime:   req.StartTime.AsTime(),
+		Priority:    req.Priority,
 	}
 
 	createdTask, err := handler.taskService.Create(task)
@@ -45,14 +50,7 @@ func (handler *TaskHandler) CreateTask(ctx context.Context, req *taskv1.CreateTa
 	}
 
 	return &taskv1.CreateTaskResponse{
-		Task: &taskv1.Task{
-			Id:              createdTask.Id,
-			Title:           createdTask.Title,
-			UserId:          createdTask.UserId,
-			DurationSeconds: int32(createdTask.Duration / time.Second),
-			StartTime:       timestamppb.New(createdTask.StartTime),
-			Priority:        createdTask.Priority,
-		},
+		Task: taskToProto(createdTask),
 	}, nil
 }
 
@@ -65,12 +63,17 @@ func (handler *TaskHandler) UpdateTask(ctx context.Context, req *taskv1.UpdateTa
 	}
 
 	task := &model.Task{
-		Id:        req.Id,
-		Title:     req.Title,
-		UserId:    req.UserId,
-		Duration:  time.Duration(req.Duration) * time.Second,
-		StartTime: req.StartTime.AsTime(),
-		Priority:  req.Priority,
+		Id:          req.Id,
+		Title:       req.Title,
+		Description: req.Description,
+		UserId:      req.UserId,
+		ColumnId:    req.ColumnId,
+		Position:    req.Position,
+		Progress:    req.Progress,
+		IsDone:      req.IsDone,
+		Duration:    time.Duration(req.Duration) * time.Second,
+		StartTime:   req.StartTime.AsTime(),
+		Priority:    req.Priority,
 	}
 
 	if err := handler.taskService.Update(task); err != nil {
@@ -102,14 +105,7 @@ func (handler *TaskHandler) GetTaskById(ctx context.Context, req *taskv1.GetTask
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &taskv1.Task{
-		Id:              task.Id,
-		Title:           task.Title,
-		UserId:          task.UserId,
-		StartTime:       timestamppb.New(task.StartTime),
-		DurationSeconds: int32(task.Duration / time.Second),
-		Priority:        task.Priority,
-	}, nil
+	return taskToProto(task), nil
 }
 
 func (handler *TaskHandler) GetTasksByUserId(ctx context.Context, req *taskv1.GetTasksByUserIdRequest) (*taskv1.GetTasksByUserIdResponse, error) {
@@ -117,7 +113,7 @@ func (handler *TaskHandler) GetTasksByUserId(ctx context.Context, req *taskv1.Ge
 		return nil, status.Error(codes.InvalidArgument, "get tasks by user request is nil")
 	}
 
-	tasks, err := handler.taskService.GetByUserId(req.UserId)
+	tasks, err := handler.taskService.GetByUserId(req.UserId, req.BoardId)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -126,14 +122,27 @@ func (handler *TaskHandler) GetTasksByUserId(ctx context.Context, req *taskv1.Ge
 		Tasks: make([]*taskv1.Task, len(tasks)),
 	}
 	for i, task := range tasks {
-		response.Tasks[i] = &taskv1.Task{
-			Id:              task.Id,
-			Title:           task.Title,
-			UserId:          task.UserId,
-			StartTime:       timestamppb.New(task.StartTime),
-			DurationSeconds: int32(task.Duration / time.Second),
-			Priority:        task.Priority,
-		}
+		response.Tasks[i] = taskToProto(task)
 	}
 	return response, nil
+}
+
+func taskToProto(task *model.Task) *taskv1.Task {
+	result := &taskv1.Task{
+		Id:              task.Id,
+		Title:           task.Title,
+		Description:     task.Description,
+		UserId:          task.UserId,
+		ColumnId:        task.ColumnId,
+		Position:        task.Position,
+		Progress:        task.Progress,
+		IsDone:          task.IsDone,
+		StartTime:       timestamppb.New(task.StartTime),
+		DurationSeconds: int32(task.Duration / time.Second),
+		Priority:        task.Priority,
+	}
+	if task.CompletedAt != nil {
+		result.CompletedAt = timestamppb.New(*task.CompletedAt)
+	}
+	return result
 }

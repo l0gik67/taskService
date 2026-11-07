@@ -48,6 +48,21 @@ services:
       timeout: 3s
       retries: 10
       start_period: 5s
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      task-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --quiet --spider http://127.0.0.1/" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 
 volumes:
   postgres_data:

@@ -21,6 +21,12 @@ message Task {
   int32 duration_seconds = 4;
   google.protobuf.Timestamp start_time = 5;
   int32 priority = 6;
+  string description = 7;
+  int64 column_id = 8;
+  int32 position = 9;
+  int32 progress = 10;
+  bool is_done = 11;
+  google.protobuf.Timestamp completed_at = 12;
 }
 
 message CreateTaskRequest {
@@ -29,6 +35,11 @@ message CreateTaskRequest {
   int32 duration_seconds = 3;
   google.protobuf.Timestamp start_time = 4;
   int32 priority = 5;
+  string description = 6;
+  int64 column_id = 7;
+  int32 position = 8;
+  int32 progress = 9;
+  bool is_done = 10;
 }
 
 message CreateTaskResponse {
@@ -42,6 +53,11 @@ message UpdateTaskRequest {
   int32 duration = 4;
   google.protobuf.Timestamp start_time = 5;
   int32 priority = 6;
+  string description = 7;
+  int64 column_id = 8;
+  int32 position = 9;
+  int32 progress = 10;
+  bool is_done = 11;
 }
 
 message DeleteTaskRequest {
@@ -54,6 +70,7 @@ message GetTaskByIdRequest {
 
 message GetTasksByUserIdRequest {
   int64 user_id = 1;
+  int64 board_id = 2;
 }
 
 message GetTasksByUserIdResponse {

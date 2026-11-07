@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f4f6fb">
+    <title>TaskFlow — канбан-доска</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" href="#" aria-label="TaskFlow">
+            <span class="brand-mark">T</span>
+            <span>TaskFlow</span>
+        </a>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">
+                <span>Доски</span>
+                <button id="new-board" type="button" aria-label="Добавить доску">+</button>
+            </div>
+            <div id="board-list" class="board-list"></div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="profile">
+                <span id="profile-avatar" class="profile-avatar">U1</span>
+                <span class="profile-copy">
+                    <strong id="profile-name">Пользователь 1</strong>
+                    <small>Владелец досок</small>
+                </span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="workspace">
+        <header class="topbar">
+            <label class="search-box">
+                <span>⌕</span>
+                <input id="task-search" type="search" placeholder="Поиск задач" autocomplete="off">
+                <kbd>⌘ K</kbd>
+            </label>
+            <div class="topbar-actions">
+                <button id="new-task-top" class="primary-button" type="button"><span>+</span> Новая задача</button>
+            </div>
+        </header>
+
+        <section class="board-header">
+            <div>
+                <div id="board-eyebrow" class="eyebrow">Доска</div>
+                <div class="title-row">
+                    <h1 id="board-title">Загрузка…</h1>
+                </div>
+                <p id="board-description">Получаем данные из task-service.</p>
+            </div>
+            <div class="board-summary">
+                <div class="summary-item">
+                    <strong id="summary-progress">0%</strong>
+                    <span>общий прогресс</span>
+                </div>
+                <div class="summary-ring" id="summary-ring" aria-hidden="true"><span></span></div>
+            </div>
+        </section>
+
+        <section class="board-controls" aria-label="Управление доской">
+            <div class="control-actions">
+                <label class="filter-select">
+                    <span>Приоритет</span>
+                    <select id="priority-filter">
+                        <option value="all">Все</option>
+                        <option value="high">Высокий</option>
+                        <option value="medium">Средний</option>
+                        <option value="low">Низкий</option>
+                    </select>
+                </label>
+                <button id="new-column" class="quiet-button" type="button">+ Колонка</button>
+            </div>
+        </section>
+
+        <section id="kanban-board" class="kanban-board" aria-label="Канбан-доска"></section>
+    </main>
+</div>
+
+<div id="drawer-layer" class="drawer-layer" aria-hidden="true">
+    <button id="drawer-backdrop" class="drawer-backdrop" type="button" aria-label="Закрыть задачу"></button>
+    <aside class="task-drawer" aria-label="Детали задачи">
+        <div class="drawer-topbar">
+            <span id="drawer-task-id" class="task-code">TASK-000</span>
+            <div>
+                <button id="close-drawer" class="icon-button" type="button" aria-label="Закрыть">×</button>
+            </div>
+        </div>
+        <div id="drawer-content" class="drawer-content"></div>
+    </aside>
+</div>
+
+<dialog id="task-dialog" class="task-dialog">
+    <form id="task-form" method="dialog">
+        <div class="dialog-header">
+            <div>
+                <span class="eyebrow">Новая задача</span>
+                <h2>Добавить в бэклог</h2>
+            </div>
+            <button id="close-dialog" class="icon-button" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <label class="field full-field">
+            <span>Название</span>
+            <input id="new-task-title" name="title" required maxlength="100" placeholder="Что нужно сделать?">
+        </label>
+        <label class="field full-field">
+            <span>Приоритет</span>
+            <select id="new-task-priority" name="priority">
+                <option value="medium">Средний</option>
+                <option value="high">Высокий</option>
+                <option value="low">Низкий</option>
+            </select>
+        </label>
+        <label class="field full-field">
+            <span>Описание</span>
+            <textarea id="new-task-description" name="description" rows="4" placeholder="Добавьте контекст задачи"></textarea>
+        </label>
+        <div class="dialog-actions">
+            <button id="cancel-task" class="secondary-button" type="button">Отмена</button>
+            <button class="primary-button" type="submit">Создать задачу</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="board-dialog" class="task-dialog">
+    <form id="board-form" method="dialog">
+        <div class="dialog-header">
+            <div>
+                <span class="eyebrow">Новая доска</span>
+                <h2>Создать рабочее пространство</h2>
+            </div>
+            <button id="close-board-dialog" class="icon-button" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <label class="field full-field">
+            <span>Название</span>
+            <input id="board-name" required maxlength="100" placeholder="Например, Разработка">
+        </label>
+        <div class="dialog-actions">
+            <button id="cancel-board" class="secondary-button" type="button">Отмена</button>
+            <button class="primary-button" type="submit">Создать доску</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="column-dialog" class="task-dialog">
+    <form id="column-form" method="dialog">
+        <div class="dialog-header">
+            <div>
+                <span id="column-dialog-eyebrow" class="eyebrow">Колонка</span>
+                <h2 id="column-dialog-title">Настроить колонку</h2>
+            </div>
+            <button id="close-column-dialog" class="icon-button" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <label class="field full-field">
+            <span>Название</span>
+            <input id="column-name" required maxlength="100" placeholder="Например, Ожидает ответа">
+        </label>
+        <div class="dialog-actions split-actions">
+            <button id="delete-column" class="danger-button" type="button">Удалить</button>
+            <div>
+                <button id="cancel-column" class="secondary-button" type="button">Отмена</button>
+                <button id="save-column" class="primary-button" type="submit">Сохранить</button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="confirm-dialog" class="task-dialog confirm-dialog">
+    <form id="confirm-form" method="dialog">
+        <div class="dialog-header">
+            <div>
+                <span class="eyebrow">Подтверждение</span>
+                <h2 id="confirm-title">Подтвердите действие</h2>
+            </div>
+            <button id="close-confirm-dialog" class="icon-button" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <p id="confirm-message" class="confirm-message"></p>
+        <label id="confirm-target-field" class="field full-field" hidden>
+            <span>Перенести задачи в</span>
+            <select id="confirm-target"></select>
+        </label>
+        <div class="dialog-actions">
+            <button id="cancel-confirm" class="secondary-button" type="button">Отмена</button>
+            <button id="confirm-action" class="danger-button" type="submit">Удалить</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

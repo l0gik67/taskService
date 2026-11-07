@@ -26,7 +26,9 @@ generate-grpc-code-database-service:
       --go_opt=paths=source_relative \
       --go-grpc_out=. \
       --go-grpc_opt=paths=source_relative \
-      internal/database-service/api/task/v1/task.proto
+      internal/database-service/api/task/v1/task.proto \
+      internal/database-service/api/board/v1/board.proto \
+      internal/database-service/api/user/v1/user.proto
 
 deploy-service:
 	docker compose --env-file .env -f docker-compose.yaml up -d --build --wait

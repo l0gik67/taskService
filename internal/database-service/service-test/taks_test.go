@@ -20,7 +20,7 @@ func (r *fakeTaskRepository) GetById(id int64) (*model.Task, error) {
 	panic("unexpected GetById call")
 }
 
-func (r *fakeTaskRepository) GetByUserId(userId int64) ([]*model.Task, error) {
+func (r *fakeTaskRepository) GetByUserId(userId int64, boardId int64) ([]*model.Task, error) {
 	panic("unexpected GetByUserId call")
 }
 

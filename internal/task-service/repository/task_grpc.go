@@ -40,9 +40,11 @@ func (repository *GRPCTaskRepository) GetByFilters(ctx context.Context, filters 
 		return nil, err
 	}
 
-	response, err := repository.client.GetTasksByUserId(ctx, &taskv1.GetTasksByUserIdRequest{
-		UserId: *filters.UserID,
-	})
+	request := &taskv1.GetTasksByUserIdRequest{UserId: *filters.UserID}
+	if filters.BoardID != nil {
+		request.BoardId = *filters.BoardID
+	}
+	response, err := repository.client.GetTasksByUserId(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +112,12 @@ func createTaskRequest(task *model.Task) (*taskv1.CreateTaskRequest, error) {
 
 	return &taskv1.CreateTaskRequest{
 		Title:           task.Title,
+		Description:     task.Description,
 		UserId:          task.UserId,
+		ColumnId:        task.ColumnId,
+		Position:        task.Position,
+		Progress:        task.Progress,
+		IsDone:          task.IsDone,
 		DurationSeconds: durationSeconds,
 		StartTime:       startTime,
 		Priority:        task.Priority,
@@ -132,12 +139,17 @@ func updateTaskRequest(task *model.Task) (*taskv1.UpdateTaskRequest, error) {
 	}
 
 	return &taskv1.UpdateTaskRequest{
-		Id:        task.Id,
-		Title:     task.Title,
-		UserId:    task.UserId,
-		Duration:  durationSeconds,
-		StartTime: startTime,
-		Priority:  task.Priority,
+		Id:          task.Id,
+		Title:       task.Title,
+		Description: task.Description,
+		UserId:      task.UserId,
+		ColumnId:    task.ColumnId,
+		Position:    task.Position,
+		Progress:    task.Progress,
+		IsDone:      task.IsDone,
+		Duration:    durationSeconds,
+		StartTime:   startTime,
+		Priority:    task.Priority,
 	}, nil
 }
 
@@ -152,14 +164,27 @@ func taskFromProto(task *taskv1.Task) (*model.Task, error) {
 		return nil, fmt.Errorf("database-service returned an invalid task start_time: %w", err)
 	}
 
-	return &model.Task{
-		Id:        task.Id,
-		Title:     task.Title,
-		UserId:    task.UserId,
-		Duration:  time.Duration(task.DurationSeconds) * time.Second,
-		StartTime: task.StartTime.AsTime(),
-		Priority:  task.Priority,
-	}, nil
+	result := &model.Task{
+		Id:          task.Id,
+		Title:       task.Title,
+		Description: task.Description,
+		UserId:      task.UserId,
+		ColumnId:    task.ColumnId,
+		Position:    task.Position,
+		Progress:    task.Progress,
+		IsDone:      task.IsDone,
+		Duration:    time.Duration(task.DurationSeconds) * time.Second,
+		StartTime:   task.StartTime.AsTime(),
+		Priority:    task.Priority,
+	}
+	if task.CompletedAt != nil {
+		if err := task.CompletedAt.CheckValid(); err != nil {
+			return nil, fmt.Errorf("database-service returned an invalid task completed_at: %w", err)
+		}
+		completedAt := task.CompletedAt.AsTime()
+		result.CompletedAt = &completedAt
+	}
+	return result, nil
 }
 
 func durationToProtoSeconds(duration time.Duration) (int32, error) {

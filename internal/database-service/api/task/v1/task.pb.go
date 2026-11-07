@@ -31,6 +31,12 @@ type Task struct {
 	DurationSeconds int32                  `protobuf:"varint,4,opt,name=duration_seconds,json=durationSeconds,proto3" json:"duration_seconds,omitempty"`
 	StartTime       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	Priority        int32                  `protobuf:"varint,6,opt,name=priority,proto3" json:"priority,omitempty"`
+	Description     string                 `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"`
+	ColumnId        int64                  `protobuf:"varint,8,opt,name=column_id,json=columnId,proto3" json:"column_id,omitempty"`
+	Position        int32                  `protobuf:"varint,9,opt,name=position,proto3" json:"position,omitempty"`
+	Progress        int32                  `protobuf:"varint,10,opt,name=progress,proto3" json:"progress,omitempty"`
+	IsDone          bool                   `protobuf:"varint,11,opt,name=is_done,json=isDone,proto3" json:"is_done,omitempty"`
+	CompletedAt     *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -107,6 +113,48 @@ func (x *Task) GetPriority() int32 {
 	return 0
 }
 
+func (x *Task) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Task) GetColumnId() int64 {
+	if x != nil {
+		return x.ColumnId
+	}
+	return 0
+}
+
+func (x *Task) GetPosition() int32 {
+	if x != nil {
+		return x.Position
+	}
+	return 0
+}
+
+func (x *Task) GetProgress() int32 {
+	if x != nil {
+		return x.Progress
+	}
+	return 0
+}
+
+func (x *Task) GetIsDone() bool {
+	if x != nil {
+		return x.IsDone
+	}
+	return false
+}
+
+func (x *Task) GetCompletedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CompletedAt
+	}
+	return nil
+}
+
 type CreateTaskRequest struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	Title           string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
@@ -114,6 +162,11 @@ type CreateTaskRequest struct {
 	DurationSeconds int32                  `protobuf:"varint,3,opt,name=duration_seconds,json=durationSeconds,proto3" json:"duration_seconds,omitempty"`
 	StartTime       *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	Priority        int32                  `protobuf:"varint,5,opt,name=priority,proto3" json:"priority,omitempty"`
+	Description     string                 `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
+	ColumnId        int64                  `protobuf:"varint,7,opt,name=column_id,json=columnId,proto3" json:"column_id,omitempty"`
+	Position        int32                  `protobuf:"varint,8,opt,name=position,proto3" json:"position,omitempty"`
+	Progress        int32                  `protobuf:"varint,9,opt,name=progress,proto3" json:"progress,omitempty"`
+	IsDone          bool                   `protobuf:"varint,10,opt,name=is_done,json=isDone,proto3" json:"is_done,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -183,6 +236,41 @@ func (x *CreateTaskRequest) GetPriority() int32 {
 	return 0
 }
 
+func (x *CreateTaskRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *CreateTaskRequest) GetColumnId() int64 {
+	if x != nil {
+		return x.ColumnId
+	}
+	return 0
+}
+
+func (x *CreateTaskRequest) GetPosition() int32 {
+	if x != nil {
+		return x.Position
+	}
+	return 0
+}
+
+func (x *CreateTaskRequest) GetProgress() int32 {
+	if x != nil {
+		return x.Progress
+	}
+	return 0
+}
+
+func (x *CreateTaskRequest) GetIsDone() bool {
+	if x != nil {
+		return x.IsDone
+	}
+	return false
+}
+
 type CreateTaskResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Task          *Task                  `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
@@ -235,6 +323,11 @@ type UpdateTaskRequest struct {
 	Duration      int32                  `protobuf:"varint,4,opt,name=duration,proto3" json:"duration,omitempty"`
 	StartTime     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	Priority      int32                  `protobuf:"varint,6,opt,name=priority,proto3" json:"priority,omitempty"`
+	Description   string                 `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"`
+	ColumnId      int64                  `protobuf:"varint,8,opt,name=column_id,json=columnId,proto3" json:"column_id,omitempty"`
+	Position      int32                  `protobuf:"varint,9,opt,name=position,proto3" json:"position,omitempty"`
+	Progress      int32                  `protobuf:"varint,10,opt,name=progress,proto3" json:"progress,omitempty"`
+	IsDone        bool                   `protobuf:"varint,11,opt,name=is_done,json=isDone,proto3" json:"is_done,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -309,6 +402,41 @@ func (x *UpdateTaskRequest) GetPriority() int32 {
 		return x.Priority
 	}
 	return 0
+}
+
+func (x *UpdateTaskRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *UpdateTaskRequest) GetColumnId() int64 {
+	if x != nil {
+		return x.ColumnId
+	}
+	return 0
+}
+
+func (x *UpdateTaskRequest) GetPosition() int32 {
+	if x != nil {
+		return x.Position
+	}
+	return 0
+}
+
+func (x *UpdateTaskRequest) GetProgress() int32 {
+	if x != nil {
+		return x.Progress
+	}
+	return 0
+}
+
+func (x *UpdateTaskRequest) GetIsDone() bool {
+	if x != nil {
+		return x.IsDone
+	}
+	return false
 }
 
 type DeleteTaskRequest struct {
@@ -402,6 +530,7 @@ func (x *GetTaskByIdRequest) GetId() int64 {
 type GetTasksByUserIdRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	BoardId       int64                  `protobuf:"varint,2,opt,name=board_id,json=boardId,proto3" json:"board_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -439,6 +568,13 @@ func (*GetTasksByUserIdRequest) Descriptor() ([]byte, []int) {
 func (x *GetTasksByUserIdRequest) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
+	}
+	return 0
+}
+
+func (x *GetTasksByUserIdRequest) GetBoardId() int64 {
+	if x != nil {
+		return x.BoardId
 	}
 	return 0
 }
@@ -491,7 +627,7 @@ var File_internal_database_service_api_task_v1_task_proto protoreflect.FileDescr
 
 const file_internal_database_service_api_task_v1_task_proto_rawDesc = "" +
 	"\n" +
-	"0internal/database-service/api/task/v1/task.proto\x12\atask.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xc7\x01\n" +
+	"0internal/database-service/api/task/v1/task.proto\x12\atask.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x96\x03\n" +
 	"\x04Task\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x17\n" +
@@ -499,16 +635,29 @@ const file_internal_database_service_api_task_v1_task_proto_rawDesc = "" +
 	"\x10duration_seconds\x18\x04 \x01(\x05R\x0fdurationSeconds\x129\n" +
 	"\n" +
 	"start_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12\x1a\n" +
-	"\bpriority\x18\x06 \x01(\x05R\bpriority\"\xc4\x01\n" +
+	"\bpriority\x18\x06 \x01(\x05R\bpriority\x12 \n" +
+	"\vdescription\x18\a \x01(\tR\vdescription\x12\x1b\n" +
+	"\tcolumn_id\x18\b \x01(\x03R\bcolumnId\x12\x1a\n" +
+	"\bposition\x18\t \x01(\x05R\bposition\x12\x1a\n" +
+	"\bprogress\x18\n" +
+	" \x01(\x05R\bprogress\x12\x17\n" +
+	"\ais_done\x18\v \x01(\bR\x06isDone\x12=\n" +
+	"\fcompleted_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\"\xd4\x02\n" +
 	"\x11CreateTaskRequest\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12)\n" +
 	"\x10duration_seconds\x18\x03 \x01(\x05R\x0fdurationSeconds\x129\n" +
 	"\n" +
 	"start_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12\x1a\n" +
-	"\bpriority\x18\x05 \x01(\x05R\bpriority\"7\n" +
+	"\bpriority\x18\x05 \x01(\x05R\bpriority\x12 \n" +
+	"\vdescription\x18\x06 \x01(\tR\vdescription\x12\x1b\n" +
+	"\tcolumn_id\x18\a \x01(\x03R\bcolumnId\x12\x1a\n" +
+	"\bposition\x18\b \x01(\x05R\bposition\x12\x1a\n" +
+	"\bprogress\x18\t \x01(\x05R\bprogress\x12\x17\n" +
+	"\ais_done\x18\n" +
+	" \x01(\bR\x06isDone\"7\n" +
 	"\x12CreateTaskResponse\x12!\n" +
-	"\x04task\x18\x01 \x01(\v2\r.task.v1.TaskR\x04task\"\xc5\x01\n" +
+	"\x04task\x18\x01 \x01(\v2\r.task.v1.TaskR\x04task\"\xd5\x02\n" +
 	"\x11UpdateTaskRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x17\n" +
@@ -516,13 +665,20 @@ const file_internal_database_service_api_task_v1_task_proto_rawDesc = "" +
 	"\bduration\x18\x04 \x01(\x05R\bduration\x129\n" +
 	"\n" +
 	"start_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12\x1a\n" +
-	"\bpriority\x18\x06 \x01(\x05R\bpriority\"#\n" +
+	"\bpriority\x18\x06 \x01(\x05R\bpriority\x12 \n" +
+	"\vdescription\x18\a \x01(\tR\vdescription\x12\x1b\n" +
+	"\tcolumn_id\x18\b \x01(\x03R\bcolumnId\x12\x1a\n" +
+	"\bposition\x18\t \x01(\x05R\bposition\x12\x1a\n" +
+	"\bprogress\x18\n" +
+	" \x01(\x05R\bprogress\x12\x17\n" +
+	"\ais_done\x18\v \x01(\bR\x06isDone\"#\n" +
 	"\x11DeleteTaskRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"$\n" +
 	"\x12GetTaskByIdRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"2\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"M\n" +
 	"\x17GetTasksByUserIdRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x03R\x06userId\"?\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x19\n" +
+	"\bboard_id\x18\x02 \x01(\x03R\aboardId\"?\n" +
 	"\x18GetTasksByUserIdResponse\x12#\n" +
 	"\x05tasks\x18\x01 \x03(\v2\r.task.v1.TaskR\x05tasks2\xec\x02\n" +
 	"\vTaskService\x12E\n" +
@@ -562,25 +718,26 @@ var file_internal_database_service_api_task_v1_task_proto_goTypes = []any{
 }
 var file_internal_database_service_api_task_v1_task_proto_depIdxs = []int32{
 	8,  // 0: task.v1.Task.start_time:type_name -> google.protobuf.Timestamp
-	8,  // 1: task.v1.CreateTaskRequest.start_time:type_name -> google.protobuf.Timestamp
-	0,  // 2: task.v1.CreateTaskResponse.task:type_name -> task.v1.Task
-	8,  // 3: task.v1.UpdateTaskRequest.start_time:type_name -> google.protobuf.Timestamp
-	0,  // 4: task.v1.GetTasksByUserIdResponse.tasks:type_name -> task.v1.Task
-	1,  // 5: task.v1.TaskService.CreateTask:input_type -> task.v1.CreateTaskRequest
-	3,  // 6: task.v1.TaskService.UpdateTask:input_type -> task.v1.UpdateTaskRequest
-	4,  // 7: task.v1.TaskService.DeleteTask:input_type -> task.v1.DeleteTaskRequest
-	5,  // 8: task.v1.TaskService.GetTaskById:input_type -> task.v1.GetTaskByIdRequest
-	6,  // 9: task.v1.TaskService.GetTasksByUserId:input_type -> task.v1.GetTasksByUserIdRequest
-	2,  // 10: task.v1.TaskService.CreateTask:output_type -> task.v1.CreateTaskResponse
-	9,  // 11: task.v1.TaskService.UpdateTask:output_type -> google.protobuf.Empty
-	9,  // 12: task.v1.TaskService.DeleteTask:output_type -> google.protobuf.Empty
-	0,  // 13: task.v1.TaskService.GetTaskById:output_type -> task.v1.Task
-	7,  // 14: task.v1.TaskService.GetTasksByUserId:output_type -> task.v1.GetTasksByUserIdResponse
-	10, // [10:15] is the sub-list for method output_type
-	5,  // [5:10] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	8,  // 1: task.v1.Task.completed_at:type_name -> google.protobuf.Timestamp
+	8,  // 2: task.v1.CreateTaskRequest.start_time:type_name -> google.protobuf.Timestamp
+	0,  // 3: task.v1.CreateTaskResponse.task:type_name -> task.v1.Task
+	8,  // 4: task.v1.UpdateTaskRequest.start_time:type_name -> google.protobuf.Timestamp
+	0,  // 5: task.v1.GetTasksByUserIdResponse.tasks:type_name -> task.v1.Task
+	1,  // 6: task.v1.TaskService.CreateTask:input_type -> task.v1.CreateTaskRequest
+	3,  // 7: task.v1.TaskService.UpdateTask:input_type -> task.v1.UpdateTaskRequest
+	4,  // 8: task.v1.TaskService.DeleteTask:input_type -> task.v1.DeleteTaskRequest
+	5,  // 9: task.v1.TaskService.GetTaskById:input_type -> task.v1.GetTaskByIdRequest
+	6,  // 10: task.v1.TaskService.GetTasksByUserId:input_type -> task.v1.GetTasksByUserIdRequest
+	2,  // 11: task.v1.TaskService.CreateTask:output_type -> task.v1.CreateTaskResponse
+	9,  // 12: task.v1.TaskService.UpdateTask:output_type -> google.protobuf.Empty
+	9,  // 13: task.v1.TaskService.DeleteTask:output_type -> google.protobuf.Empty
+	0,  // 14: task.v1.TaskService.GetTaskById:output_type -> task.v1.Task
+	7,  // 15: task.v1.TaskService.GetTasksByUserId:output_type -> task.v1.GetTasksByUserIdResponse
+	11, // [11:16] is the sub-list for method output_type
+	6,  // [6:11] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_internal_database_service_api_task_v1_task_proto_init() }

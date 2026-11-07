@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	boardv1 "database-service/api/board/v1"
 	taskv1 "database-service/api/task/v1"
+	userv1 "database-service/api/user/v1"
 	"database-service/repository"
 	"database-service/service"
 	"database-service/transport"
@@ -29,9 +31,15 @@ func run() error {
 	}
 	defer pool.Close()
 
-	repo := repository.NewTaskRepository(pool)
-	taskService := service.NewTaskServiceImpl(repo)
+	taskRepository := repository.NewTaskRepository(pool)
+	taskService := service.NewTaskServiceImpl(taskRepository)
 	handler := transport.NewTaskHandler(taskService)
+	boardRepository := repository.NewBoardRepository(pool)
+	boardService := service.NewBoardService(boardRepository)
+	boardHandler := transport.NewBoardHandler(boardService)
+	userRepository := repository.NewUserRepository(pool)
+	userService := service.NewUserService(userRepository)
+	userHandler := transport.NewUserHandler(userService)
 
 	serverAddress := os.Getenv("ADDRESS")
 	listener, err := net.Listen("tcp", serverAddress)
@@ -44,6 +52,8 @@ func run() error {
 	defer grpcServer.Stop()
 
 	taskv1.RegisterTaskServiceServer(grpcServer, handler)
+	boardv1.RegisterBoardServiceServer(grpcServer, boardHandler)
+	userv1.RegisterUserServiceServer(grpcServer, userHandler)
 
 	log.Printf("gRPC listening on %s", listener.Addr())
 	return grpcServer.Serve(listener)

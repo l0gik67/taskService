@@ -1,7 +1,9 @@
 package main
 
 import (
+	boardv1 "database-service/api/board/v1"
 	taskv1 "database-service/api/task/v1"
+	userv1 "database-service/api/user/v1"
 	"errors"
 	"fmt"
 	"log"
@@ -47,6 +49,16 @@ func run() error {
 	taskService := service.NewTaskService(taskRepository)
 	taskHandler := transport.NewTaskHandler(taskService)
 	router := transport.NewRouter(taskHandler)
+	boardClient := boardv1.NewBoardServiceClient(connection)
+	boardRepository := repository.NewGRPCBoardRepository(boardClient)
+	boardService := service.NewBoardService(boardRepository)
+	boardHandler := transport.NewBoardHandler(boardService)
+	transport.RegisterBoardRoutes(router, boardHandler)
+	userClient := userv1.NewUserServiceClient(connection)
+	userRepository := repository.NewGRPCUserRepository(userClient)
+	userService := service.NewUserService(userRepository)
+	userHandler := transport.NewUserHandler(userService)
+	transport.RegisterUserRoutes(router, userHandler)
 
 	log.Printf("HTTP listening on %s", httpServerAddress)
 	if err := http.ListenAndServe(httpServerAddress, router); err != nil && !errors.Is(err, http.ErrServerClosed) {

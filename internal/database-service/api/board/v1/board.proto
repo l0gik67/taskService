@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package board.v1;
+
+option go_package = "database-service/api/board/v1;boardv1";
+
+import "google/protobuf/empty.proto";
+
+service BoardService {
+  rpc CreateBoard(CreateBoardRequest) returns (CreateBoardResponse);
+  rpc GetBoardById(GetBoardByIdRequest) returns (Board);
+  rpc GetBoardsByUserId(GetBoardsByUserIdRequest) returns (GetBoardsByUserIdResponse);
+  rpc CreateColumn(CreateColumnRequest) returns (BoardColumn);
+  rpc UpdateColumn(UpdateColumnRequest) returns (BoardColumn);
+  rpc DeleteColumn(DeleteColumnRequest) returns (google.protobuf.Empty);
+}
+
+message Board {
+  int64 id = 1;
+  int64 owner_user_id = 2;
+  string title = 3;
+  int64 done_column_id = 4;
+  repeated BoardColumn columns = 5;
+}
+
+message BoardColumn {
+  int64 id = 1;
+  int64 board_id = 2;
+  string title = 3;
+  int32 position = 4;
+}
+
+message CreateBoardRequest {
+  int64 owner_user_id = 1;
+  string title = 2;
+}
+
+message CreateBoardResponse {
+  Board board = 1;
+}
+
+message GetBoardByIdRequest {
+  int64 id = 1;
+}
+
+message GetBoardsByUserIdRequest {
+  int64 user_id = 1;
+}
+
+message GetBoardsByUserIdResponse {
+  repeated Board boards = 1;
+}
+
+message CreateColumnRequest {
+  int64 board_id = 1;
+  string title = 2;
+  int32 position = 3;
+}
+
+message UpdateColumnRequest {
+  int64 id = 1;
+  int64 board_id = 2;
+  string title = 3;
+  int32 position = 4;
+}
+
+message DeleteColumnRequest {
+  int64 id = 1;
+  int64 target_column_id = 2;
+}

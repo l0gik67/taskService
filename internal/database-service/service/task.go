@@ -7,7 +7,7 @@ import (
 
 type TaskService interface {
 	GetById(id int64) (*model.Task, error)
-	GetByUserId(userId int64) ([]*model.Task, error)
+	GetByUserId(userId int64, boardId int64) ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
 	Update(task *model.Task) error
 	Delete(taskId int64) error
@@ -25,8 +25,8 @@ func (service *TaskServiceImpl) GetById(id int64) (*model.Task, error) {
 	return service.repo.GetById(id)
 }
 
-func (service *TaskServiceImpl) GetByUserId(userId int64) ([]*model.Task, error) {
-	return service.repo.GetByUserId(userId)
+func (service *TaskServiceImpl) GetByUserId(userId int64, boardId int64) ([]*model.Task, error) {
+	return service.repo.GetByUserId(userId, boardId)
 }
 
 func (service *TaskServiceImpl) Create(task *model.Task) (*model.Task, error) {

@@ -9,12 +9,18 @@ import (
 var ErrTaskNotFound = errors.New("task not found")
 
 type Task struct {
-	Id        int64         `json:"id"`
-	Title     string        `json:"title"`
-	UserId    int64         `json:"user_id"`
-	Duration  time.Duration `json:"duration"`
-	StartTime time.Time     `json:"start_time"`
-	Priority  int32         `json:"priority"` // 1 - important; 100 - zero important
+	Id          int64         `json:"id"`
+	Title       string        `json:"title"`
+	Description string        `json:"description"`
+	UserId      int64         `json:"user_id"`
+	ColumnId    int64         `json:"column_id"`
+	Position    int32         `json:"position"`
+	Progress    int32         `json:"progress"`
+	IsDone      bool          `json:"is_done"`
+	CompletedAt *time.Time    `json:"completed_at,omitempty"`
+	Duration    time.Duration `json:"duration"`
+	StartTime   time.Time     `json:"start_time"`
+	Priority    int32         `json:"priority"` // 1 - important; 100 - zero important
 }
 
 func (task *Task) Validate() error {
@@ -29,6 +35,12 @@ func (task *Task) Validate() error {
 	}
 	if task.Duration < 0 {
 		return errors.New("task duration can't be less than 0")
+	}
+	if task.Position < 0 {
+		return errors.New("task position can't be less than 0")
+	}
+	if task.Progress < 0 || task.Progress > 100 {
+		return errors.New("task progress should be between 0 and 100")
 	}
 	return nil
 }
